@@ -5,6 +5,8 @@ var bodyparser = require('body-parser');
 
 var app = express();
 
+var user_routes = require('./routes/user');
+
 app.use(bodyparser.urlencoded({extended:false}));
 app.use(bodyparser.json());
 
@@ -14,5 +16,7 @@ app.get('/prueba', (req, res)=>{
         message: 'Hola mundo desde el backend'
    });
 });
+
+app.use('/api',user_routes);
 
 module.exports =app;
