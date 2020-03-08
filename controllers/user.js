@@ -10,6 +10,12 @@ var controller = {
         return res.status(200).send({
             message: "Soy el metodo testeando"
         });
+    },
+
+    save: function (req, res) {
+        return res.status(200).send({
+            message : "Registro de usuarios"
+        })
     }
 };
 
