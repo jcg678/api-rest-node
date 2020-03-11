@@ -1,5 +1,6 @@
 'use strict'
 var validator =require('validator');
+var User = require('../models/user');
 
 var controller = {
     probando: function (req, res) {
@@ -23,6 +24,23 @@ var controller = {
         var validate_password = !validator.isEmpty(params.password);
 
         if(validate_password && validate_name && validate_email && validate_surname){
+            var user = new User();
+            user.name = params.name;
+            user.surname = params.surname;
+            user.email = params.email.toLowerCase();
+            user.password = params.password;
+            user.role = 'ROLE_USER';
+            user.image = null;
+
+            User.findOne({email: user.email}, (err, issetUser)=>{
+                if(err) {return res.status(500).send({message : "Duplicidad de usuario"});}
+
+                if(!issetUser){
+                    return res.status(500).send({message : "El usuario no esta registrado"});
+                }else{
+                    return res.status(500).send({message : "El usuario ya esta registrado"});
+                }
+            });
 
         }else{
             return res.status(200).send({
@@ -31,9 +49,9 @@ var controller = {
         }
 
 
-        return res.status(200).send({
+        /*return res.status(200).send({
             message : "Registro de usuarios",
-        });
+        });*/
     }
 };
 
