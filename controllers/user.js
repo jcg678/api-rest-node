@@ -75,6 +75,11 @@ var controller = {
         /*return res.status(200).send({
             message : "Registro de usuarios",
         });*/
+    },
+    login: function (req, res) {
+        return res.status(200).send({
+            message: "Metodo de Login"
+        })
     }
 };
 
