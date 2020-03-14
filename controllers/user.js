@@ -77,9 +77,28 @@ var controller = {
         });*/
     },
     login: function (req, res) {
-        return res.status(200).send({
-            message: "Metodo de Login"
+        var params = req.body;
+
+        var validate_email = !validator.isEmpty(params.email) && validator.isEmail(params.email);
+        var validate_password = !validator.isEmpty(params.password);
+
+        if(!validate_email || !validate_password) {
+            return res.status(200).send({
+                message: "los datos son incorrectos"
+            });
+        }
+
+        User.findOne({email: params.email.toLowerCase()},(err,user)=>{
+
+
+            return res.status(200).send({
+                message: "Metodo de Login",
+                user
+            });
         })
+
+
+
     }
 };
 
