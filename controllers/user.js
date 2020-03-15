@@ -90,12 +90,37 @@ var controller = {
 
         User.findOne({email: params.email.toLowerCase()},(err,user)=>{
 
+            if(err){
+                return res.status(500).send({
+                    message: "Error al intentar identificarse"
+                });
+            }
 
-            return res.status(200).send({
-                message: "Metodo de Login",
-                user
+            if(!user){
+                return res.status(404).send({
+                    message: "El usuario no existe"
+                });
+            }
+
+            bcrypt.compare(params.password, user.password, (err, check)=>{
+
+            if(check){
+
+
+                return res.status(200).send({
+                    message: "Metodo de Login",
+                    user
+                });
+             }else{
+
+                return res.status(200).send({
+                    message: "La contraseña no es correcta"
+                });
+            }
             });
-        })
+
+
+        });
 
 
 
