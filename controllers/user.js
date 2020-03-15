@@ -2,6 +2,7 @@
 var validator =require('validator');
 var User = require('../models/user');
 var bcrypt = require('bcrypt-nodejs');
+var jwt = require('../services/jwt');
 
 var controller = {
     probando: function (req, res) {
@@ -106,8 +107,13 @@ var controller = {
 
             if(check){
 
-                user.password = undefined;
+                if(params.gettoken){
+                    return res.status(200).send({
+                        token: jwt.createToken(user)
+                    });
+                }
 
+                user.password = undefined;
                 return res.status(200).send({
                     message: "Metodo de Login",
                     user
