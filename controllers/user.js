@@ -119,18 +119,19 @@ var controller = {
                     user
                 });
              }else{
-
                 return res.status(200).send({
                     message: "La contraseña no es correcta"
                 });
             }
             });
-
-
         });
+    },
+    update: function (req, res) {
 
 
-
+        return res.status(200).send({
+            message: "metodo actualizar"
+        });
     }
 };
 
