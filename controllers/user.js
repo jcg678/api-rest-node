@@ -106,6 +106,7 @@ var controller = {
 
             if(check){
 
+                user.password = undefined;
 
                 return res.status(200).send({
                     message: "Metodo de Login",
