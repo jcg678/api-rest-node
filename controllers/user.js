@@ -20,10 +20,18 @@ var controller = {
 
         var params = req.body;
 
-        var validate_name = !validator.isEmpty(params.name);
-        var validate_surname = !validator.isEmpty(params.surname);
-        var validate_email = !validator.isEmpty(params.email) && validator.isEmail(params.email);
-        var validate_password = !validator.isEmpty(params.password);
+        try{
+            var validate_name = !validator.isEmpty(params.name);
+            var validate_surname = !validator.isEmpty(params.surname);
+            var validate_email = !validator.isEmpty(params.email) && validator.isEmail(params.email);
+            var validate_password = !validator.isEmpty(params.password);
+        }catch (e) {
+            return res.status(200).send({
+                message: "Faltan datos por enviar",
+                params
+            });
+        }
+
 
         if(validate_password && validate_name && validate_email && validate_surname){
             var user = new User();
@@ -80,8 +88,15 @@ var controller = {
     login: function (req, res) {
         var params = req.body;
 
-        var validate_email = !validator.isEmpty(params.email) && validator.isEmail(params.email);
-        var validate_password = !validator.isEmpty(params.password);
+        try{
+            var validate_email = !validator.isEmpty(params.email) && validator.isEmail(params.email);
+            var validate_password = !validator.isEmpty(params.password);
+        }catch (e) {
+            return res.status(200).send({
+                message: "Faltan datos por enviar",
+                params
+            });
+        }
 
         if(!validate_email || !validate_password) {
             return res.status(200).send({
@@ -127,11 +142,44 @@ var controller = {
         });
     },
     update: function (req, res) {
+        var params = req.body;
 
+        try{
+            var validate_name = !validator.isEmpty(params.name);
+            var validate_surname = !validator.isEmpty(params.surname);
+            var validate_email = !validator.isEmpty(params.email) && validator.isEmail(params.email);
+        }catch (e) {
+            return res.status(200).send({
+                message: "Faltan datos por enviar",
+                params
+            });
+        }
+        delete params.password;
 
-        return res.status(200).send({
-            message: "metodo actualizar"
+        var userId = req.user.sub;
+        User.findOneAndUpdate({_id:userId},params,{new:true},(err,userUpdated)=>{
+            if(err){
+                return res.status(200).send({
+                    status: 'error',
+                    message: 'Error al actulializar el usuario'
+                });
+            }
+
+            if(!userUpdated){
+                return res.status(200).send({
+                    status: 'error',
+                    message: 'No llega el user actualizado'
+                });
+            }
+
+            return res.status(200).send({
+                status: 'success',
+                user: userUpdated
+            });
+
         });
+
+
     }
 };
 
