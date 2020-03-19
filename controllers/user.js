@@ -157,28 +157,47 @@ var controller = {
         delete params.password;
 
         var userId = req.user.sub;
-        User.findOneAndUpdate({_id:userId},params,{new:true},(err,userUpdated)=>{
-            if(err){
-                return res.status(200).send({
-                    status: 'error',
-                    message: 'Error al actulializar el usuario'
-                });
-            }
 
-            if(!userUpdated){
-                return res.status(200).send({
-                    status: 'error',
-                    message: 'No llega el user actualizado'
-                });
-            }
+        if(req.user.email != params.email){
+            User.findOne({email: params.email.toLowerCase()},(err,user)=> {
 
-            return res.status(200).send({
-                status: 'success',
-                user: userUpdated
+                if (err) {
+                    return res.status(500).send({
+                        message: "Error al intentar actualizar"
+                    });
+                }
+
+                if (user && user.email == params.email) {
+                    return res.status(404).send({
+                        message: "El email no puede ser modificado"
+                    });
+                }
+            }
+            );
+        }else{
+
+            User.findOneAndUpdate({_id:userId},params,{new:true},(err,userUpdated)=>{
+                if(err){
+                    return res.status(200).send({
+                        status: 'error',
+                        message: 'Error al actulializar el usuario'
+                    });
+                }
+
+                if(!userUpdated){
+                    return res.status(200).send({
+                        status: 'error',
+                        message: 'No llega el user actualizado'
+                    });
+                }
+
+                return res.status(200).send({
+                    status: 'success',
+                    user: userUpdated
+                });
+
             });
-
-        });
-
+        }
 
     }
 };
