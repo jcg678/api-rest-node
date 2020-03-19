@@ -31,6 +31,5 @@ exports.authenticated = function (req, res, next) {
 
     req.user = payload;
 
-    console.log('estas pasando por el middleware 2');
     next();
 };
