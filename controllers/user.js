@@ -252,8 +252,23 @@ var controller = {
 
         }
 
-
     },
+
+    avatar: function (req,res) {
+        var file_name = req.params.file_name;
+        var path_file = './uploads/users/'+file_name;
+
+        fs.exists(path_file, (exits)=>{
+            if(exits){
+                return res.sendFile(path.resolve(path_file));
+            }else{
+                return res.status(404).send({
+                    message: 'La imagen no existe'
+                });
+            }
+        })
+
+    }
 };
 
 
