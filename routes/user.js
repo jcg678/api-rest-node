@@ -12,5 +12,6 @@ router.get('/testeando', UserController.testeaando);
 router.post('/register',UserController.save);
 router.post('/login', UserController.login);
 router.put('/update', md_auth.authenticated, UserController.update);
+router.post('/upload-avatar',  UserController.uploadAvatar);
 
 module.exports = router;
