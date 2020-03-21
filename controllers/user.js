@@ -3,6 +3,8 @@ var validator =require('validator');
 var User = require('../models/user');
 var bcrypt = require('bcrypt-nodejs');
 var jwt = require('../services/jwt');
+var fs = require('fs');
+var path = require('path');
 
 var controller = {
     probando: function (req, res) {
@@ -221,12 +223,36 @@ var controller = {
         var ext_split = file_name.split('\.');
         var file_ext= ext_split[1];
 
+        if(file_ext != 'png' && file_ext != 'jpg' && file_ext != 'jpeg' && file_ext!= 'gif' ){
+            fs.unlink(file_path, (err)=>{
+                return res.status(200).send({
+                    status: 'error',
+                    message: 'la extension del archivo no es valida',
+                    file: file_ext
+                });
+            });
+        }else{
+            var userId = req.user.sub;
 
-        return res.status(200).send({
-            status: 'success',
-            message: 'Uload avatar',
-            file: file_ext
-        });
+            User.findOneAndUpdate({_id: userId},{image: file_name},{new:true},(err,userUpdated)=>{
+                if(err || !userUpdated){
+                    return res.status(500).send({
+                        status: 'error',
+                        message: 'Error al guardar el usuario'
+                    });
+                }
+
+                return res.status(200).send({
+                    status: 'success',
+                    message: 'Uload avatar',
+                    user: userUpdated
+                });
+            });
+
+
+        }
+
+
     },
 };
 
