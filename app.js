@@ -6,6 +6,7 @@ var bodyparser = require('body-parser');
 var app = express();
 
 var user_routes = require('./routes/user');
+var topic_routes = require('./routes/topics');
 
 app.use(bodyparser.urlencoded({extended:false}));
 app.use(bodyparser.json());
@@ -18,5 +19,6 @@ app.get('/prueba', (req, res)=>{
 });
 
 app.use('/api',user_routes);
+app.use('/api',topic_routes);
 
 module.exports =app;
