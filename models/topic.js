@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 var CommentSchema = Schema({
    content: String,
    date: {type: Date, default: Date.now},
-   user: {type: Schema.ObjectID, ref: 'User'}
+   user: {type: Schema.Types.ObjectID, ref: 'User'}
 });
 
 var Comment = mongoose.model('Comment', CommentSchema);
@@ -17,7 +17,7 @@ var TopicSchema = Schema({
    code: String,
    lang: String,
    date: {type: Date, default:Date.now()},
-   user: {type: Schema.ObjectID, ref: 'User'},
+   user: {type: Schema.Types.ObjectID, ref: 'User'},
    comments : [CommentSchema]
 });
 
