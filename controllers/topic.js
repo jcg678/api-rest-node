@@ -29,6 +29,7 @@ var controller = {
             topic.content = params.content;
             topic.code = params.code;
             topic.lang = params.lang;
+            topic.user = req.user.sub;
 
             topic.save((err, topicStored)=>{
 
@@ -52,6 +53,48 @@ var controller = {
             });
         }
         
+
+    },
+    getTopics: function (req, res) {
+
+        if(req.params.page == null || req.params.page == false || req.params.page == undefined || req.params.page == 0 || req.params.page == '0' ){
+            var page = 1;
+        }else{
+            var page = parseInt(req.params.page);
+        }
+
+        var options ={
+            sort: {date: -1},
+            populate: 'user',
+            limit: 5,
+            page: page
+        };
+
+        Topic.paginate({},options, (err, topics)=>{
+
+            if(err){
+                return res.status(500).send({
+                    status: 'error',
+                    message: 'Error al hacer la consulta',
+                });
+            }
+
+            if(!topics){
+                return res.status(404).send({
+                    status: 'notFound',
+                    message: 'No hay topics',
+                });
+            }
+
+            return res.status(200).send({
+                status: 'success',
+                topics: topics.docs,
+                totalDocs : topics.totalDocs,
+                totalPages: topics.totalPages
+            });
+
+        });
+
 
     }
 
