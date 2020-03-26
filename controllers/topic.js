@@ -96,6 +96,35 @@ var controller = {
         });
 
 
+    },
+
+    getTopicsByUser: function (req, res) {
+        var userId = req.params.user;
+
+        Topic.find({
+            user: userId
+        }).sort([['date','descending']]).exec((err, topics)=>{
+            if(err){
+                return res.status(500).send({
+                    status: 'error',
+                    message: 'Error en la peticion'
+                });
+            }
+
+            if(!topics){
+                return res.status(404).send({
+                    message: 'No hay temas para mostrar'
+                });
+            }
+
+            return res.status(200).send({
+                status: 'success',
+                topics
+            });
+        });
+
+
+
     }
 
 };
