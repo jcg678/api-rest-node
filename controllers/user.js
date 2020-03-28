@@ -173,6 +173,28 @@ var controller = {
                     return res.status(404).send({
                         message: "El email no puede ser modificado"
                     });
+                }else{
+                    User.findOneAndUpdate({_id:userId},params,{new:true},(err,userUpdated)=>{
+                        if(err){
+                            return res.status(200).send({
+                                status: 'error',
+                                message: 'Error al actulializar el usuario'
+                            });
+                        }
+
+                        if(!userUpdated){
+                            return res.status(200).send({
+                                status: 'error',
+                                message: 'No llega el user actualizado'
+                            });
+                        }
+
+                        return res.status(200).send({
+                            status: 'success',
+                            user: userUpdated
+                        });
+
+                    });
                 }
             }
             );

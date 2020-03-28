@@ -151,10 +151,88 @@ var controller = {
         });
     },
     update: function (req, res) {
+        var topicId = req.params.id;
 
-        return res.status(200).send({
-            message: 'update topic',
+        var params = req.body;
+
+        console.log(params);
+        console.log(topicId);
+
+        try{
+            var validate_title = !validator.isEmpty(params.title);
+            var validate_content = !validator.isEmpty(params.content);
+            var validate_lang = !validator.isEmpty(params.lang);
+        }catch (e) {
+            return res.status(200).send({
+                message : 'Faltann datos por enviar'
+            });
+        }
+
+        if(validate_title && validate_content && validate_lang){
+            var update = {
+                title: params.title,
+                content: params.content,
+                code: params.code,
+                lang: params.lang
+            };
+
+            Topic.findOneAndUpdate({_id: topicId, user: req.user.sub}, update, {new:true}, (err, topicUpdate)=>{
+
+                if(err){
+                    return res.status(500).send({
+                        status: 'error',
+                        message: 'Error en la peticion'
+                    });
+                }
+
+                if(!topicUpdate){
+                    return res.status(500).send({
+                        status: 'error',
+                        message: 'No se ha actualizado el tema'
+                    });
+                }
+
+                return res.status(200).send({
+                    status: 'success',
+                    topicUpdate
+                });
+            });
+
+
+
+        }else{
+            return res.status(200).send({
+                message: 'La validación de datos no es correcta',
+            });
+        }
+    },
+    delete : function (req, res) {
+
+        var topicId = req.params.id;
+
+        Topic.findOneAndDelete({_id: topicId, user: req.user.sub}, (err, topicRemove)=>{
+            if(err){
+                return res.status(500).send({
+                    status: 'error',
+                    message: 'Error en la peticion'
+                });
+            }
+
+            if(!topicRemove){
+                return res.status(500).send({
+                    status: 'error',
+                    message: 'No se ha borrado el tema'
+                });
+            }
+
+
+            return res.status(200).send({
+                status: 'success',
+                topic: topicRemove
+            });
         });
+
+
     }
 
 };
