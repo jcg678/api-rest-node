@@ -71,9 +71,51 @@ var controller ={
 
     },
     update: function (req, res) {
-        return res.status(200).send({
-            message: "metodo de actualizar comentario"
-        });
+
+        var commentId = req.params.commentId;
+        var params = req.body;
+
+
+        try{
+            var validate_content = !validator.isEmpty(params.content);
+        }catch (e) {
+            return res.status(200).send({
+                message : 'No has comentado nada'
+            });
+        }
+
+        if(validate_content){
+            Topic.findOneAndUpdate({"comments._id": commentId},
+                {"$set":{
+                    "comments.$.content": params.content
+                    }},
+                    {new: true},(err,topicUpdate)=>{
+
+                    if(err){
+                        return res.status(500).send({
+                            status: 'error',
+                            message: 'Error en la peticion'
+                        });
+                    };
+
+                    if(!topicUpdate){
+                        return res.status(404).send({
+                            status: 'error',
+                            message: 'No existe'
+                        });
+                    }
+
+                        return res.status(200).send({
+                            status: "success",
+                            topicUpdate
+                        });
+
+                    });
+
+
+        }
+
+
     },
     delete: function (req, res) {
         return res.status(200).send({
