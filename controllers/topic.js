@@ -231,6 +231,41 @@ var controller = {
                 topic: topicRemove
             });
         });
+    },
+    search: function (req, res) {
+
+        var searchString = req.params.search;
+
+        Topic.find({
+            "$or":[
+                {"title": {"$regex": searchString, "$options": "i"}},
+                {"content": {"$regex": searchString, "$options": "i"}},
+                {"code": {"$regex": searchString, "$options": "i"}},
+                {"lang": {"$regex": searchString, "$options": "i"}},
+            ]
+        }).exec((err, topics)=>{
+           if(err){
+               return res.status(200).send({
+                   status: 'error',
+                   message: 'Errro en la peticion'
+               });
+           }
+
+           if(!topics){
+               return res.status(404).send({
+                   status: 'error',
+                   message: 'No hay resultados'
+               });
+           }
+
+            return res.status(200).send({
+                status: 'success',
+                topics
+            });
+
+
+        });
+
 
 
     }
