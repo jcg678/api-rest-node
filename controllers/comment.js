@@ -118,9 +118,53 @@ var controller ={
 
     },
     delete: function (req, res) {
-        return res.status(200).send({
-            message: "metodo de borrar comentario"
+        var commentId = req.params.commentId;
+        var topicId = req.params.topicId;
+
+        Topic.findById(topicId, (err, topic)=>{
+
+            if(err){
+                return res.status(500).send({
+                    status: 'error',
+                    message: 'Error en la peticion'
+                });
+            };
+
+            if(!topic){
+                return res.status(404).send({
+                    status: 'error',
+                    message: 'No existe'
+                });
+            }
+
+            var comment = topic.comments.id(commentId);
+
+            if(comment){
+                comment.remove();
+
+                topic.save((err, topic)=>{
+                    if(err){
+                        return res.status(500).send({
+                            status: 'error',
+                            message: 'Error en la peticion guardar topic'
+                        });
+                    };
+
+                    return res.status(200).send({
+                        status: 'success',
+                        topic
+                    });
+                });
+            }else{
+                return res.status(404).send({
+                    status: 'error',
+                    message: 'No existe el comentario'
+                });
+            }
+
+
         });
+
     },
 };
 
