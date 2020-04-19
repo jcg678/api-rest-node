@@ -175,10 +175,36 @@ var controller ={
                         });
                     };
 
-                    return res.status(200).send({
+
+                    Topic.findById(topic._id).
+                    populate('user').
+                    populate('comments.user')
+                        .exec((err,topic)=>{
+
+                            if(err){
+                                return res.status(500).send({
+                                    status: 'error',
+                                    message: 'Error en la peticion'
+                                });
+                            }
+
+                            if(!topic){
+                                return res.status(404).send({
+                                    status: 'error',
+                                    message: 'No existe ningun topic'
+                                });
+                            }
+
+                            return res.status(200).send({
+                                status: 'success',
+                                topic
+                            });
+                        });
+
+                    /*return res.status(200).send({
                         status: 'success',
                         topic
-                    });
+                    });*/
                 });
             }else{
                 return res.status(404).send({
