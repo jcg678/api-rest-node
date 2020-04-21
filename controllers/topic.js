@@ -246,7 +246,9 @@ var controller = {
                 {"code": {"$regex": searchString, "$options": "i"}},
                 {"lang": {"$regex": searchString, "$options": "i"}},
             ]
-        }).exec((err, topics)=>{
+        }).populate('user')
+            .sort([['date','descending']])
+            .exec((err, topics)=>{
            if(err){
                return res.status(200).send({
                    status: 'error',
